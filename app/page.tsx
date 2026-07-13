@@ -17,7 +17,7 @@ import type { PhysicalDimensions, DeliveryZone } from "@/lib/shipping";
 
 type Status = "idle" | "removing-bg" | "rendering" | "done" | "error";
 
-const TOTAL_VARIANTS = 35;
+const TOTAL_VARIANTS = 25;
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -137,7 +137,7 @@ export default function Home() {
       case "rendering":
         return progressLabel || "Rendering variants…";
       case "done":
-        return "All 35 variants ready.";
+        return "All 25 variants ready.";
       case "error":
         return errorMsg ?? "Something went wrong.";
       default:
@@ -152,7 +152,7 @@ export default function Home() {
           batch · client-side only
         </p>
         <h1 className="font-display text-3xl font-bold text-paper sm:text-4xl">
-          One photo in. Thirty-five listing-ready squares out.
+          One photo in. Twenty-five listing-ready squares out.
         </h1>
         <p className="max-w-2xl text-sm text-paper/60">
           Background removal, tight center crop, and square framing run entirely in
@@ -304,7 +304,7 @@ export default function Home() {
               disabled={!file || busy}
               className="w-full rounded-lg bg-accent py-2.5 font-medium text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
             >
-              {busy ? "Generating…" : "Generate 35 variants"}
+              {busy ? "Generating…" : "Generate 25 variants"}
             </button>
 
             <div className="flex items-center gap-2 font-mono text-xs text-paper/50">
@@ -333,7 +333,7 @@ export default function Home() {
             <li>· background removed → plain white / light tone</li>
             <li>· product only — no text, props, model, watermark</li>
             <li>· centered, 70–90% frame fill, tight crop</li>
-            <li>· 35 crop / tone / shadow combinations per photo</li>
+            <li>· 25 crop / tone / shadow combinations per photo</li>
           </ul>
         </section>
 

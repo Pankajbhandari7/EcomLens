@@ -33,7 +33,7 @@ export interface VariantConfig {
  * ground shadow, and background tone shift between variants.
  */
 export function buildVariantConfigs(
-  count = 35, 
+  count = 25, 
   categoryName: string | null = null,
   physicalDims: PhysicalDimensions | null = null
 ): VariantConfig[] {
@@ -45,7 +45,7 @@ export function buildVariantConfigs(
   outer: for (const shadow of [false, true]) {
     for (const tone of tones) {
       for (const fillPercent of fillLevels) {
-        if (configs.length >= count) break outer;
+        if (configs.length >= 35) break outer;
         i += 1;
         configs.push({
           id: `v${String(i).padStart(2, "0")}`,
@@ -59,11 +59,11 @@ export function buildVariantConfigs(
   }
 
   // Add 5 extra variants specifically tailored
-  if (configs.length < count) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `65% frame · white · product focused`, fillPercent: 65, shadow: false, tone: "white", jpgQuality: 0.5 }); }
-  if (configs.length < count) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `70% frame · white · product focused`, fillPercent: 70, shadow: false, tone: "white", jpgQuality: 0.5 }); }
-  if (configs.length < count) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `tight crop, minimal padding, plain white, front view, shadow-on. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 88, shadow: true, tone: "white", jpgQuality: 0.5 }); }
-  if (configs.length < count) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `slightly zoomed out, moderate padding, soft light gray, 3/4 view, shadow-off. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 75, shadow: false, tone: "light-grey", jpgQuality: 0.5 }); }
-  if (configs.length < count) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `flat lay for apparel, shadow-on. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 80, shadow: true, tone: "white", jpgQuality: 0.5, textOverlay: "FAST DELIVERY" }); }
+  if (configs.length < 35) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `65% frame · white · product focused`, fillPercent: 65, shadow: false, tone: "white", jpgQuality: 0.5 }); }
+  if (configs.length < 35) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `70% frame · white · product focused`, fillPercent: 70, shadow: false, tone: "white", jpgQuality: 0.5 }); }
+  if (configs.length < 35) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `tight crop, minimal padding, plain white, front view, shadow-on. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 88, shadow: true, tone: "white", jpgQuality: 0.5 }); }
+  if (configs.length < 35) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `slightly zoomed out, moderate padding, soft light gray, 3/4 view, shadow-off. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 75, shadow: false, tone: "light-grey", jpgQuality: 0.5 }); }
+  if (configs.length < 35) { i += 1; configs.push({ id: `v${String(i).padStart(2, "0")}`, label: `flat lay for apparel, shadow-on. Object coverage, Whitespace balance, Center alignment, Clutter removal, Edge distance, sharpness, Category fit`, fillPercent: 80, shadow: true, tone: "white", jpgQuality: 0.5, textOverlay: "FAST DELIVERY" }); }
 
   if (configs[8]) {
     configs[8].fillPercent -= 5;
@@ -101,7 +101,16 @@ export function buildVariantConfigs(
     }
   }
 
-  return configs.slice(0, count);
+  // Filter out the requested variant numbers (1-indexed based on original order)
+  const excludedIndices = new Set([6, 7, 10, 11, 12, 14, 15, 23, 24, 34]);
+  const filteredConfigs = configs.filter((_, idx) => !excludedIndices.has(idx + 1));
+  
+  // Re-number IDs so they are sequential v01 to v25
+  filteredConfigs.forEach((c, idx) => {
+    c.id = `v${String(idx + 1).padStart(2, "0")}`;
+  });
+
+  return filteredConfigs.slice(0, count);
 }
 
 interface TrimResult {
