@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #0f1512;
+  color: #f6f5f1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #5ee6a8;
+  color: #0f1512;
+}
+
+.grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.scan-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(94, 230, 168, 0.15),
+    transparent
+  );
+  animation: scan 1.6s linear infinite;
+}
