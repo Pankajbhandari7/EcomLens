@@ -1,30 +1,31 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { motion, HTMLMotionProps } from "framer-motion"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-accent text-white shadow hover:bg-accentHover hover:shadow-accent/30",
+          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
         destructive:
-          "bg-red-500 text-white shadow-sm hover:bg-red-600",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-line bg-transparent hover:bg-surface text-paper",
+          "border border-border bg-background hover:bg-muted hover:text-foreground",
         secondary:
-          "bg-surface text-paper hover:bg-line border border-transparent hover:border-line",
-        ghost: "hover:bg-surface hover:text-paper text-paper/70",
-        link: "text-accent underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-muted hover:text-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        premium: "bg-emerald-600 hover:bg-emerald-700 text-white font-semibold border-0",
       },
       size: {
-        default: "h-11 px-5 py-2",
-        sm: "h-9 rounded-lg px-4 text-xs",
-        lg: "h-14 rounded-2xl px-8 text-base",
-        icon: "h-10 w-10",
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-11 rounded-lg px-8",
+        icon: "h-9 w-9",
       },
     },
     defaultVariants: {
@@ -40,8 +41,6 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-// We wrap the button in a motion.button for tap animations.
-// If asChild is true, we skip motion.button because it would conflict with Slot.
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     if (asChild) {

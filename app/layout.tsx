@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const display = Space_Grotesk({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-display",
-});
-
-const body = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
   variable: "--font-body",
 });
 
@@ -21,9 +15,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Batch — Product Listing Image Generator",
+  title: "PackOptima - E-Commerce Seller Image Optimization Utility",
   description:
-    "Upload one product photo, get 30 marketplace-ready square variants: background removed, tight-cropped, and framed to spec — entirely in your browser.",
+    "Optimize your product images for e-commerce marketplaces to get lower shipping rates using AI padding optimization.",
 };
 
 export default function RootLayout({
@@ -32,8 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body className="font-body">{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(
+        "min-h-screen bg-background font-body antialiased selection:bg-primary/20",
+        inter.variable,
+        mono.variable
+      )}>
+        {children}
+      </body>
     </html>
   );
 }

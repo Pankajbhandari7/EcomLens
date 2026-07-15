@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Option {
@@ -42,25 +42,24 @@ export function Select({ value, onChange, options, placeholder = "Select an opti
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-full flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-2.5 text-sm font-medium text-paper outline-none transition-all shadow-inner",
-          isOpen ? "border-accent ring-1 ring-accent/20" : "hover:border-accent/50",
-          disabled && "opacity-50 cursor-not-allowed"
+          "w-full flex items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          isOpen && "ring-1 ring-ring border-ring"
         )}
       >
-        <span className="truncate pr-4">{selectedOption ? selectedOption.label : placeholder}</span>
-        <ChevronDown className={cn("w-4 h-4 text-paper/50 transition-transform duration-200 shrink-0", isOpen && "rotate-180")} />
+        <span className="truncate">{selectedOption ? selectedOption.label : <span className="text-muted-foreground">{placeholder}</span>}</span>
+        <ChevronDown className={cn("h-4 w-4 opacity-50 shrink-0 transition-transform duration-200", isOpen && "rotate-180")} />
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -2 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: -2 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 w-full mt-2 rounded-xl border border-line bg-panel shadow-2xl overflow-hidden"
+            className="absolute z-50 w-full mt-1 min-w-[8rem] overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md"
           >
-            <ul className="max-h-48 overflow-y-auto custom-scrollbar p-1">
+            <ul className="max-h-60 overflow-y-auto custom-scrollbar p-1">
               {options.map((opt) => (
                 <li key={opt.value}>
                   <button
@@ -70,13 +69,16 @@ export function Select({ value, onChange, options, placeholder = "Select an opti
                       setIsOpen(false);
                     }}
                     className={cn(
-                      "w-full text-left px-3 py-2.5 text-sm rounded-lg transition-colors truncate",
+                      "relative w-full flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors",
                       value === opt.value
-                        ? "bg-accent/10 text-accent font-semibold"
-                        : "text-paper hover:bg-surface"
+                        ? "bg-accent/50 text-accent-foreground font-medium"
+                        : "hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
-                    {opt.label}
+                    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                      {value === opt.value && <Check className="h-4 w-4" />}
+                    </span>
+                    <span className="truncate">{opt.label}</span>
                   </button>
                 </li>
               ))}

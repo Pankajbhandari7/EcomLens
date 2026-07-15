@@ -35,60 +35,54 @@ export default function VariantGallery({ variants, format }: VariantGalleryProps
 
   return (
     <div className="w-full pb-20">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-display font-semibold tracking-tight text-paper">Generated Variants</h2>
-        <span className="font-mono text-xs uppercase tracking-widest text-paper/50 bg-surface px-3 py-1 rounded-full border border-line">{variants.length} assets</span>
-      </div>
-
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
         {variants.map((v) => (
           <motion.div
             variants={itemVariants}
             key={v.config.id}
-            className="group relative flex flex-col overflow-hidden rounded-xl bg-surface/50 border border-line shadow-md transition-all hover:border-accent hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
+            className="group relative flex flex-col overflow-hidden rounded-xl bg-card border border-border shadow-sm transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md cursor-pointer p-3 gap-2"
             onClick={() => {
               setSelectedVariant(v);
               setShowModalSidebar(true);
             }}
           >
-            <div className="relative aspect-square w-full overflow-hidden bg-ink/50">
+            <div className="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800">
               <img
                 src={v.url}
                 alt={v.config.label}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="h-full w-full object-contain p-2"
               />
-              {/* Professional Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+              <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
                 <a
                   href={v.url}
                   download={v.filename}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Button variant="default" className="w-full gap-2 shadow-xl hover:shadow-accent/50">
-                    <Download className="w-4 h-4" />
-                    Download .{format}
+                  <Button variant="outline" size="sm" className="shadow-md bg-white text-slate-900 hover:bg-slate-100 border-slate-200">
+                    <Download className="w-4 h-4 mr-1.5" />
+                    Download
                   </Button>
                 </a>
               </div>
             </div>
             
-            {v.config.shippingPrice !== undefined && (
-              <div className="px-5 py-4 border-t border-line bg-panel flex justify-between items-center">
-                <span className="font-mono text-xs uppercase tracking-wider text-paper/60">
-                  Est. Shipping
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="font-display text-lg font-bold text-paper">
+            <div className="text-left mt-1">
+              <p className="text-xs font-bold truncate text-slate-800 dark:text-slate-200">{v.config.label.replace(/^\d+% frame · /, '')}</p>
+              
+              {v.config.shippingPrice !== undefined && (
+                <div className="flex items-center justify-between mt-1.5">
+                  <span className="text-[10px] text-slate-500 font-semibold uppercase">Est. Shipping</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md border bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
                     ₹{v.config.shippingPrice}
                   </span>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </motion.div>
         ))}
       </motion.div>
@@ -100,7 +94,7 @@ export default function VariantGallery({ variants, format }: VariantGalleryProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-ink/95 p-4 sm:p-8 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 sm:p-8 backdrop-blur-sm"
             onClick={() => setSelectedVariant(null)}
           >
             <motion.div 
@@ -108,27 +102,27 @@ export default function VariantGallery({ variants, format }: VariantGalleryProps
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className={`relative flex flex-col md:flex-row gap-8 ${showModalSidebar ? 'max-w-6xl' : 'max-w-5xl'} w-full h-full md:h-auto items-center justify-center bg-panel/80 rounded-3xl border border-line p-2 shadow-[0_30px_60px_rgba(0,0,0,0.6)] transition-all duration-500`}
+              className={`relative flex flex-col md:flex-row gap-6 ${showModalSidebar ? 'max-w-5xl' : 'max-w-4xl'} w-full h-full md:h-auto items-center justify-center bg-card rounded-2xl border border-border p-3 shadow-xl transition-all duration-500`}
               onClick={(e) => e.stopPropagation()}
             >
               <Button 
                 variant="outline"
                 size="icon"
                 onClick={() => setSelectedVariant(null)}
-                className="absolute -top-4 -right-4 md:-top-6 md:-right-6 rounded-full bg-surface shadow-2xl z-10 hover:scale-110"
+                className="absolute -top-4 -right-4 md:-top-5 md:-right-5 rounded-full bg-card shadow-lg z-10 hover:scale-105 border-border text-foreground"
               >
-                <X className="w-5 h-5 text-paper/70" />
+                <X className="w-4 h-4" />
               </Button>
               
               <div 
-                className={`flex-1 w-full flex items-center justify-center bg-ink/50 rounded-2xl border border-line overflow-hidden cursor-pointer shadow-inner transition-all duration-500 ${showModalSidebar ? 'max-h-[75vh]' : 'max-h-[90vh]'}`}
+                className={`flex-1 w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950 rounded-xl border border-border overflow-hidden cursor-pointer transition-all duration-500 ${showModalSidebar ? 'max-h-[70vh]' : 'max-h-[85vh]'}`}
                 onClick={() => setShowModalSidebar(!showModalSidebar)}
                 title="Click to toggle details"
               >
                 <img 
                   src={selectedVariant.url} 
                   alt={selectedVariant.config.label}
-                  className="max-h-full max-w-full object-contain"
+                  className="max-h-full max-w-full object-contain p-4 drop-shadow-md"
                 />
               </div>
               
@@ -136,34 +130,34 @@ export default function VariantGallery({ variants, format }: VariantGalleryProps
                 {showModalSidebar && (
                   <motion.div 
                     initial={{ opacity: 0, x: 20, width: 0 }}
-                    animate={{ opacity: 1, x: 0, width: "384px" }}
+                    animate={{ opacity: 1, x: 0, width: "340px" }}
                     exit={{ opacity: 0, x: 20, width: 0 }}
-                    className="flex flex-col gap-8 p-6 md:p-8 bg-surface/30 rounded-2xl border border-line shrink-0"
+                    className="flex flex-col gap-6 p-6 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-border shrink-0 h-full overflow-y-auto custom-scrollbar"
                   >
                     <div>
-                      <h3 className="font-display text-3xl font-semibold tracking-tight text-paper mb-3">{selectedVariant.config.label.replace(/^\d+% frame · /, '')}</h3>
-                      <div className="px-3 py-1.5 bg-ink/50 border border-line rounded-lg inline-block">
-                        <p className="font-mono text-[10px] text-paper/60 truncate max-w-[250px]">{selectedVariant.filename}</p>
+                      <h3 className="text-xl font-bold tracking-tight text-foreground mb-2">{selectedVariant.config.label.replace(/^\d+% frame · /, '')}</h3>
+                      <div className="px-2 py-1 bg-background border border-border rounded-md inline-block shadow-sm">
+                        <p className="font-mono text-[10px] text-muted-foreground truncate max-w-[250px]">{selectedVariant.filename}</p>
                       </div>
                     </div>
                     
                     {selectedVariant.config.shippingPrice !== undefined && (
                       <div className="flex flex-col gap-4">
-                        <div className="h-px w-full bg-line"></div>
+                        <div className="h-px w-full bg-border"></div>
                         
                         <div>
-                          <span className="text-[10px] uppercase font-mono text-paper/50 tracking-widest block mb-1">Estimated Shipping</span>
-                          <span className="font-display text-4xl font-light text-paper tracking-tighter">
+                          <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest block mb-1">Estimated Shipping</span>
+                          <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
                             ₹{selectedVariant.config.shippingPrice}
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 mt-2">
-                            <div className="bg-ink/40 p-4 rounded-xl border border-line shadow-sm">
-                            <span className="block text-[10px] font-mono text-paper/50 uppercase tracking-wider mb-1">Carrier Slab</span>
-                            <span className="text-sm font-semibold text-accent">{selectedVariant.config.shippingSlab}</span>
+                        <div className="grid grid-cols-1 gap-3 mt-2">
+                          <div className="bg-background p-4 rounded-xl border border-border shadow-sm flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Carrier Slab</span>
+                            <span className="text-sm font-bold text-foreground">{selectedVariant.config.shippingSlab}</span>
                           </div>
-                          </div>
+                        </div>
                       </div>
                     )}
                     
@@ -172,9 +166,9 @@ export default function VariantGallery({ variants, format }: VariantGalleryProps
                         href={selectedVariant.url}
                         download={selectedVariant.filename}
                       >
-                        <Button size="lg" className="w-full gap-3 shadow-2xl hover:shadow-accent/50 text-base">
-                          <Download className="w-5 h-5" />
-                          Download .{format}
+                        <Button className="w-full gap-2 text-sm bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-950 font-bold shadow-md h-10">
+                          <Download className="w-4 h-4" />
+                          Download .{format.toUpperCase()}
                         </Button>
                       </a>
                     </div>

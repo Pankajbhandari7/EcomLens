@@ -66,7 +66,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage }: BeforeAft
 
   return (
     <div 
-      className="relative w-full aspect-square overflow-hidden rounded-2xl select-none bg-ink/50 border border-line"
+      className="relative w-full aspect-square overflow-hidden rounded-2xl select-none bg-slate-50 dark:bg-slate-950 border border-border shadow-inner"
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
@@ -74,7 +74,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage }: BeforeAft
       <img 
         src={afterImage} 
         alt="Processed" 
-        className="absolute inset-0 w-full h-full object-contain"
+        className="absolute inset-0 w-full h-full object-contain p-2"
         draggable={false}
       />
       
@@ -85,26 +85,33 @@ export default function BeforeAfterSlider({ beforeImage, afterImage }: BeforeAft
         <img 
           src={beforeImage} 
           alt="Original" 
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-contain p-2 filter brightness-95"
           draggable={false}
         />
       </div>
 
+      {/* Modern Handle Line */}
       <div 
-        className="absolute top-0 bottom-0 w-1 bg-accent cursor-ew-resize hover:bg-accentHover transition-colors shadow-sm"
+        className="absolute top-0 bottom-0 w-[2px] bg-white cursor-ew-resize hover:bg-emerald-500 transition-colors shadow-md"
         style={{ left: `${sliderPosition}%` }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-panel border-2 border-accent rounded-full flex items-center justify-center shadow-md">
+        {/* Modern Handle Knob */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-slate-200 transform transition-transform hover:scale-110">
           <div className="flex gap-1">
-            <div className="w-0.5 h-3 bg-accent/70 rounded-full"></div>
-            <div className="w-0.5 h-3 bg-accent/70 rounded-full"></div>
+            <div className="w-0.5 h-3 bg-slate-400 rounded-full"></div>
+            <div className="w-0.5 h-3 bg-slate-400 rounded-full"></div>
           </div>
         </div>
       </div>
       
-      <div className="absolute bottom-4 left-4 right-4 flex justify-between pointer-events-none opacity-50 z-10">
-        <span className="bg-panel/80 border border-line backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono tracking-wider text-paper font-bold">ORIGINAL</span>
-        <span className="bg-panel/80 border border-line backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono tracking-wider text-paper font-bold">PROCESSED</span>
+      {/* Modern Badges */}
+      <div className="absolute bottom-6 left-6 right-6 flex justify-between pointer-events-none z-10">
+        <span className="bg-slate-900/60 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white shadow-sm transition-opacity" style={{ opacity: sliderPosition < 20 ? 0 : 1 }}>
+          Original
+        </span>
+        <span className="bg-emerald-500/80 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white shadow-sm transition-opacity" style={{ opacity: sliderPosition > 80 ? 0 : 1 }}>
+          Processed
+        </span>
       </div>
     </div>
   );
