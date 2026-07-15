@@ -661,29 +661,29 @@ export default function AppWorkspace() {
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest bg-emerald-500/5 px-3 py-1 rounded-md border border-emerald-500/10">Process Flow</span>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-4">Optimize Images in 4 Simple Steps</h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">How we calculate safety ranges to ensure barcode scanners determine optimal dimensions.</p>
+          <p className="text-slate-600 dark:text-slate-400 mt-3 text-[15px] font-medium leading-relaxed">How we calculate safety ranges to ensure barcode scanners determine optimal dimensions.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="flex flex-col items-center text-center p-4">
-            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-4 shadow-sm border border-slate-200/50 dark:border-slate-700">1</div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2 text-base">Upload Image</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Drag and drop your raw product listing photo into the upload dropzone.</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12">
+          <div className="flex flex-col items-center text-center p-2">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-5 shadow-sm border border-slate-200/50 dark:border-slate-700">1</div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2.5 text-[15px] tracking-tight">Upload Image</h3>
+            <p className="text-[13px] font-medium text-slate-600/90 dark:text-slate-400 leading-relaxed">Drag and drop your raw product listing photo into the upload dropzone.</p>
           </div>
-          <div className="flex flex-col items-center text-center p-4">
-            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-4 shadow-sm border border-slate-200/50 dark:border-slate-700">2</div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2 text-base">AI Analysis</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Our AI isolates the product bounding box, alignment vectors, and white space ratios.</p>
+          <div className="flex flex-col items-center text-center p-2">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-5 shadow-sm border border-slate-200/50 dark:border-slate-700">2</div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2.5 text-[15px] tracking-tight">AI Analysis</h3>
+            <p className="text-[13px] font-medium text-slate-600/90 dark:text-slate-400 leading-relaxed">Our AI isolates the product bounding box, alignment vectors, and white space ratios.</p>
           </div>
-          <div className="flex flex-col items-center text-center p-4">
-            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-4 shadow-sm border border-slate-200/50 dark:border-slate-700">3</div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2 text-base">Generate Layouts</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">The system generates 20–30 visual variants with calibrated safety padding percentages.</p>
+          <div className="flex flex-col items-center text-center p-2">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center font-bold text-lg mb-5 shadow-sm border border-slate-200/50 dark:border-slate-700">3</div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2.5 text-[15px] tracking-tight">Generate Layouts</h3>
+            <p className="text-[13px] font-medium text-slate-600/90 dark:text-slate-400 leading-relaxed">The system generates 20–30 visual variants with calibrated safety padding percentages.</p>
           </div>
-          <div className="flex flex-col items-center text-center p-4">
-            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg mb-4 shadow-sm border border-emerald-500/20">4</div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2 text-base">Compare & Use</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Select the variant offering optimal padding alignment, download, and update your listing.</p>
+          <div className="flex flex-col items-center text-center p-2">
+            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg mb-5 shadow-sm border border-emerald-500/20">4</div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2.5 text-[15px] tracking-tight">Compare & Use</h3>
+            <p className="text-[13px] font-medium text-slate-600/90 dark:text-slate-400 leading-relaxed">Select the variant offering optimal padding alignment, download, and update your listing.</p>
           </div>
         </div>
       </section>
@@ -694,7 +694,7 @@ export default function AppWorkspace() {
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest bg-emerald-500/5 px-3 py-1 rounded-md border border-emerald-500/10">Tool Capabilities</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-4">Why Sellers Choose VisionFlow</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Deterministic visual optimization designed specifically to lower logistics weight calculations.</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-3 text-[15px] font-medium leading-relaxed">Deterministic visual optimization designed specifically to lower logistics weight calculations.</p>
           </div>
 
           <motion.div
@@ -705,36 +705,36 @@ export default function AppWorkspace() {
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             <motion.div variants={itemVariants}>
-              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-6 flex flex-col space-y-4">
-                <div className="h-10 w-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
+              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-8 flex flex-col space-y-5">
+                <div className="h-12 w-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
                   <Maximize className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">Dynamic Padding Optimization</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Dynamic Padding Optimization</h3>
+                <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 leading-[1.6]">
                   Automatically inserts optimal white boundaries. This stops automated warehouse scanners from clipping product edges, preventing incorrect volume estimations.
                 </p>
               </div>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-6 flex flex-col space-y-4">
-                <div className="h-10 w-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
+              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-8 flex flex-col space-y-5">
+                <div className="h-12 w-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
                   <Zap className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">20-30 Variations in One Click</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">20-30 Variations in One Click</h3>
+                <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 leading-[1.6]">
                   Evaluates contrast scales, margins, alignments, and backgrounds, all compiled in seconds to give you multiple listing image variants to pick from.
                 </p>
               </div>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-6 flex flex-col space-y-4">
-                <div className="h-10 w-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
+              <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-300 rounded-xl p-8 flex flex-col space-y-5">
+                <div className="h-12 w-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
                   <Shield className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">100% Marketplace Compliant</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">100% Marketplace Compliant</h3>
+                <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 leading-[1.6]">
                   Provides clean, background-corrected images matching E-Commerce listing standards, preserving exact catalog resolutions without artifacting.
                 </p>
               </div>
@@ -745,27 +745,27 @@ export default function AppWorkspace() {
 
       {/* FAQ Section */}
       <section className="border-t border-slate-200 dark:border-slate-800 py-16 sm:py-24 max-w-4xl mx-auto container px-4 sm:px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <span className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest bg-emerald-500/5 px-3 py-1 rounded-md border border-emerald-500/10">Help Center</span>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-4">Frequently Asked Questions</h2>
         </div>
 
         <div className="space-y-6">
-          <div className="p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl">
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">How does VisionFlow help reduce shipping costs?</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+          <div className="p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base tracking-tight">How does VisionFlow help reduce shipping costs?</h3>
+            <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 mt-3 leading-[1.6]">
               Logistics warehouses use computerized scanning cameras to measure product dimensions. If a listing photo is off-center or lacks safety borders, automated scanners may miscalculate the product edges, leading to higher dimensional weight charges. VisionFlow optimizes padding and centering to ensure accurate scanning.
             </p>
           </div>
-          <div className="p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl">
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">How many image variants are generated?</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+          <div className="p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base tracking-tight">How many image variants are generated?</h3>
+            <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 mt-3 leading-[1.6]">
               For every uploaded image, the tool processes approximately 20–30 unique layout variants. These include background-removed files with white or light-gray fills, varying border padding amounts, and fine-tuned brightness alignments.
             </p>
           </div>
-          <div className="p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl">
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">Does the tool modify the actual product visual?</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+          <div className="p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base tracking-tight">Does the tool modify the actual product visual?</h3>
+            <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 mt-3 leading-[1.6]">
               No. It only adjusts white space padding, alignment, contrast, and background characteristics. Your actual product remains perfectly unaltered and true to life, ensuring listing rules are followed.
             </p>
           </div>
