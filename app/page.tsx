@@ -412,13 +412,13 @@ export default function AppWorkspace() {
             {/* Top processing bar replacement */}
             <div className="w-full flex items-center justify-between p-4 bg-card border border-border rounded-xl shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted border border-border shrink-0 shadow-sm cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                <label className="w-12 h-12 rounded-lg overflow-hidden bg-muted border border-border shrink-0 shadow-sm cursor-pointer relative block">
                   <img src={originalUrl!} alt="Thumbnail" className="w-full h-full object-cover hover:opacity-80 transition-opacity" title="Click to replace" />
-                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
+                  <input type="file" className="hidden" accept="image/*" onChange={(e) => {
                       if (e.target.files && e.target.files.length > 0) handleFileSelected(e.target.files[0]);
                     }} 
                   />
-                </div>
+                </label>
                 <div className="flex flex-col">
                   <h3 className="text-sm font-bold text-foreground tracking-tight">{file.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
