@@ -102,7 +102,7 @@ export function buildVariantConfigs(
   }
 
   // Filter out the requested variant numbers (1-indexed based on original order)
-  const excludedIndices = new Set([6, 7, 10, 11, 12, 14, 15, 23, 24, 34]);
+  const excludedIndices = new Set([6, 7, 11, 12, 14, 15, 24]);
   const filteredConfigs = configs.filter((_, idx) => !excludedIndices.has(idx + 1));
   
   // Re-number IDs so they are sequential v01 to v25
