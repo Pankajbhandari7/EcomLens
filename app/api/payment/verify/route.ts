@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import dbConnect from '@/lib/mongodb';
