@@ -14,6 +14,8 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+import { Providers } from "./providers";
+
 export const metadata: Metadata = {
   title: "PackOptima - E-Commerce Seller Image Optimization Utility",
   description:
@@ -32,7 +34,9 @@ export default function RootLayout({
         inter.variable,
         mono.variable
       )}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

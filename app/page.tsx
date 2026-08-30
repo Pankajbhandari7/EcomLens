@@ -2,6 +2,7 @@
 
 import React, { useCallback, useMemo, useRef, useState, useEffect, DragEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Script from "next/script";
 import { 
   UploadCloud, DownloadCloud, Sun, Moon, Settings2, Sparkles, Loader2, RefreshCw, Layers, ArrowRight, Maximize, Shield, Zap, Image as ImageIcon
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { PremiumSpinner } from "@/components/ui/Spinner";
 import { Select } from "@/components/ui/Select";
+import { useSession, signOut } from "next-auth/react";
 
 import { removeImageBackground } from "@/lib/bgRemoval";
 import {
@@ -37,6 +39,7 @@ type Status = "idle" | "removing-bg" | "rendering" | "done" | "error";
 const TOTAL_VARIANTS = 28;
 
 export default function AppWorkspace() {
+  const { data: session } = useSession();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
@@ -54,6 +57,87 @@ export default function AppWorkspace() {
   const [useBgRemoval, setUseBgRemoval] = useState<boolean>(true);
   const [isDragging, setIsDragging] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [isRecharging, setIsRecharging] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
+
+  const handleRecharge = async (amount: number, description: string) => {
+    if (!session) return;
+    setIsRecharging(true);
+    setShowPricingModal(false);
+    try {
+      const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount })
+      });
+      const order = await res.json();
+      if (!res.ok) {
+        setErrorMsg(order.message || "Failed to create order");
+        setIsRecharging(false);
+        return;
+      }
+
+      const options = {
+        key: order.key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: "EcomLens",
+        description: description,
+        order_id: order.id,
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              })
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok) {
+              setCredits(verifyData.credits);
+              setErrorMsg(null);
+            } else {
+              setErrorMsg(verifyData.message || "Payment verification failed");
+            }
+          } catch (err) {
+            setErrorMsg("Payment verification error");
+          }
+        },
+        prefill: {
+          name: session.user?.name || "",
+          email: session.user?.email || "",
+        },
+        theme: {
+          color: "#10b981"
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any){
+        setErrorMsg("Payment failed: " + response.error.description);
+      });
+      rzp.open();
+    } catch (err) {
+      setErrorMsg("Failed to initiate payment");
+    } finally {
+      setIsRecharging(false);
+    }
+  };
+
+
+  useEffect(() => {
+    if (session) {
+      fetch("/api/user/credits")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.credits !== undefined) setCredits(data.credits);
+        });
+    }
+  }, [session]);
 
   // Apply dark mode class to HTML element
   useEffect(() => {
@@ -109,12 +193,25 @@ export default function AppWorkspace() {
   const handleGenerate = useCallback(async () => {
     if (!file) return;
 
+    if (credits !== null && credits <= 0) {
+      setErrorMsg("Insufficient credits. Please upgrade to generate more variants.");
+      return;
+    }
+
     productBlobUrls.current.forEach((u) => URL.revokeObjectURL(u));
     productBlobUrls.current = [];
     setVariants([]);
     setErrorMsg(null);
 
     try {
+      const deductRes = await fetch("/api/user/credits", { method: "POST" });
+      const deductData = await deductRes.json();
+      if (!deductRes.ok) {
+        setErrorMsg(deductData.message || "Failed to use credit");
+        return;
+      }
+      setCredits(deductData.credits);
+
       let imageToProcess: Blob = file;
       
       if (useBgRemoval) {
@@ -219,7 +316,7 @@ export default function AppWorkspace() {
               <Layers className="h-4.5 w-4.5" />
             </div>
             <span className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
-              VisionFlow
+              EcomLens
             </span>
           </div>
 
@@ -242,6 +339,21 @@ export default function AppWorkspace() {
                 )}
               </AnimatePresence>
             </Button>
+            
+            {session?.user && (
+              <div className="flex items-center gap-3 mr-2 border-l border-slate-200 dark:border-slate-700 pl-4">
+                <div className="hidden sm:flex flex-col items-end">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">{session.user.name || "User"}</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">{session.user.email}</span>
+                </div>
+                <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                  {(session.user.name?.[0] || session.user.email?.[0] || "U").toUpperCase()}
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => signOut()} className="text-xs px-2 h-8 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                  Logout
+                </Button>
+              </div>
+            )}
             
             {!file ? (
               <Button size="sm" className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-950 font-semibold shadow-sm transition-all" onClick={() => {
@@ -310,7 +422,7 @@ export default function AppWorkspace() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                   className="text-base text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed"
                 >
-                  Logistics systems determine shipping charges by scanning product bounds. VisionFlow automatically creates 20–30 visual layouts with centered positioning, safety margins, and optimized contrast to prevent excessive dimensional weight estimation.
+                  Logistics systems determine shipping charges by scanning product bounds. EcomLens automatically creates 20–30 visual layouts with centered positioning, safety margins, and optimized contrast to prevent excessive dimensional weight estimation.
                 </motion.p>
 
                 <motion.div
@@ -555,7 +667,7 @@ export default function AppWorkspace() {
 
                   <Button
                     onClick={handleGenerate}
-                    disabled={busy}
+                    disabled={busy || (credits !== null && credits <= 0)}
                     variant="premium"
                     className="w-full h-10 mt-4 text-[13px] relative overflow-hidden group shadow-md"
                   >
@@ -568,11 +680,26 @@ export default function AppWorkspace() {
                       ) : (
                         <>
                           <Zap className="w-4 h-4" />
-                          GENERATE VARIANTS
+                          GENERATE VARIANTS ({credits !== null ? credits : '-'} Credits)
                         </>
                       )}
                     </span>
                   </Button>
+
+                  {credits !== null && credits <= 0 && (
+                    <Button
+                      onClick={() => setShowPricingModal(true)}
+                      disabled={isRecharging}
+                      variant="outline"
+                      className="w-full h-10 mt-2 text-[13px] border-emerald-500 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+                    >
+                      {isRecharging ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> PREPARING...</>
+                      ) : (
+                        "Buy Credits"
+                      )}
+                    </Button>
+                  )}
                 </div>
               </aside>
 
@@ -688,12 +815,12 @@ export default function AppWorkspace() {
         </div>
       </section>
 
-      {/* Why VisionFlow Section */}
+      {/* Why EcomLens Section */}
       <section className="border-t border-slate-200 dark:border-slate-800 bg-slate-100/30 dark:bg-slate-950/20 py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest bg-emerald-500/5 px-3 py-1 rounded-md border border-emerald-500/10">Tool Capabilities</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-4">Why Sellers Choose VisionFlow</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-4">Why Sellers Choose EcomLens</h2>
             <p className="text-slate-600 dark:text-slate-400 mt-3 text-[15px] font-medium leading-relaxed">Deterministic visual optimization designed specifically to lower logistics weight calculations.</p>
           </div>
 
@@ -752,9 +879,9 @@ export default function AppWorkspace() {
 
         <div className="space-y-6">
           <div className="p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl shadow-sm transition-all hover:shadow-md">
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base tracking-tight">How does VisionFlow help reduce shipping costs?</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base tracking-tight">How does EcomLens help reduce shipping costs?</h3>
             <p className="text-[14px] font-medium text-slate-600/90 dark:text-slate-400 mt-3 leading-[1.6]">
-              Logistics warehouses use computerized scanning cameras to measure product dimensions. If a listing photo is off-center or lacks safety borders, automated scanners may miscalculate the product edges, leading to higher dimensional weight charges. VisionFlow optimizes padding and centering to ensure accurate scanning.
+              Logistics warehouses use computerized scanning cameras to measure product dimensions. If a listing photo is off-center or lacks safety borders, automated scanners may miscalculate the product edges, leading to higher dimensional weight charges. EcomLens optimizes padding and centering to ensure accurate scanning.
             </p>
           </div>
           <div className="p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 rounded-xl shadow-sm transition-all hover:shadow-md">
@@ -777,7 +904,7 @@ export default function AppWorkspace() {
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center space-x-2">
             <Layers className="h-4 w-4 text-slate-400" />
-            <span className="font-bold text-slate-700 dark:text-slate-300">VisionFlow</span>
+            <span className="font-bold text-slate-700 dark:text-slate-300">EcomLens</span>
             <span>© {new Date().getFullYear()}</span>
           </div>
           <div className="flex space-x-6">
@@ -787,6 +914,67 @@ export default function AppWorkspace() {
           </div>
         </div>
       </footer>
+      <AnimatePresence>
+        {showPricingModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.95, opacity: 0 }} 
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl max-w-lg w-full relative"
+            >
+              <button 
+                onClick={() => setShowPricingModal(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Select a Credit Package</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">More credits, better value for generating optimized product images.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Package 1 */}
+                <div onClick={() => handleRecharge(39, "Buy 20 Credits")} className="border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 cursor-pointer p-4 rounded-xl flex flex-col items-center justify-center text-center transition-all">
+                  <span className="text-3xl font-bold text-slate-900 dark:text-white">20</span>
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mt-1 mb-3">Credits</span>
+                  <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-md w-full">
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">₹39</span>
+                  </div>
+                </div>
+
+                {/* Package 2 */}
+                <div onClick={() => handleRecharge(99, "Buy 60 Credits")} className="border-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 cursor-pointer p-4 rounded-xl flex flex-col items-center justify-center text-center transition-all relative">
+                  <span className="absolute -top-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Popular</span>
+                  <span className="text-3xl font-bold text-slate-900 dark:text-white">60</span>
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mt-1 mb-3">Credits</span>
+                  <div className="bg-emerald-100 dark:bg-emerald-800/50 px-3 py-1.5 rounded-md w-full">
+                    <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300">₹99</span>
+                  </div>
+                </div>
+
+                {/* Package 3 */}
+                <div onClick={() => handleRecharge(149, "Buy 100 Credits")} className="border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 cursor-pointer p-4 rounded-xl flex flex-col items-center justify-center text-center transition-all">
+                  <span className="text-3xl font-bold text-slate-900 dark:text-white">100</span>
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mt-1 mb-3">Credits</span>
+                  <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-md w-full">
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">₹149</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
     </div>
   );
 }
