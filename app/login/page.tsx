@@ -242,6 +242,11 @@ function LoginForm() {
                             onBlur={() => setFocusedField(null)}
                           />
                         </div>
+                        <div className="flex justify-end mt-2">
+                          <Link href="/forgot-password" className="text-[12px] font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+                            Forgot Password?
+                          </Link>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>

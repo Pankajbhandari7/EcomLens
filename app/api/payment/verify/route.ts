@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/User';
+import { Transaction } from '@/models/Transaction';
 
 export async function POST(req: Request) {
   try {
@@ -45,6 +46,12 @@ export async function POST(req: Request) {
       key_secret: process.env.RAZORPAY_KEY_SECRET!,
     });
 
+    // PREVENTION: Replay Attack Check
+    const existingTransaction = await Transaction.findOne({ razorpay_order_id });
+    if (existingTransaction) {
+      return NextResponse.json({ message: 'Payment already processed for this order' }, { status: 400 });
+    }
+
     const order = await razorpay.orders.fetch(razorpay_order_id);
     
     let creditsToAdd = 0;
@@ -60,6 +67,16 @@ export async function POST(req: Request) {
 
     user.availableCredits += creditsToAdd;
     await user.save();
+
+    await Transaction.create({
+      userId: user._id,
+      amount: order.amount,
+      creditsAdded: creditsToAdd,
+      currency: order.currency || 'INR',
+      razorpay_order_id,
+      razorpay_payment_id,
+      status: 'success'
+    });
 
     return NextResponse.json({ message: 'Payment successful, credits added', credits: user.availableCredits, success: true }, { status: 200 });
 

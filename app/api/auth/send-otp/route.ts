@@ -17,19 +17,46 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit OTP
 }
 
+import { z } from 'zod';
+
+const sendOtpSchema = z.object({
+  email: z.string().email('Invalid email address').optional().or(z.literal('')),
+  mobileNumber: z.string().min(10, 'Invalid mobile number').optional().or(z.literal('')),
+  purpose: z.enum(['login', 'signup', 'forgot-password']),
+}).refine(data => data.email || data.mobileNumber, {
+  message: "Either email or mobile number is required",
+  path: ["email"]
+});
+
 export async function POST(req: Request) {
   try {
-    const { email, mobileNumber, purpose } = await req.json();
+    const rawData = await req.json();
+    const parsedData = sendOtpSchema.safeParse(rawData);
+
+    if (!parsedData.success) {
+      return NextResponse.json({ message: parsedData.error.issues[0].message }, { status: 400 });
+    }
+
+    const { email, mobileNumber, purpose } = parsedData.data;
 
     await dbConnect();
 
     let targetMobileNumber = mobileNumber;
     let targetEmail = email;
+    const searchIdentifier = email || mobileNumber;
 
-    if (purpose === 'login') {
-      if (!email && !mobileNumber) {
-        return NextResponse.json({ message: 'Email or Mobile Number is required for login OTP' }, { status: 400 });
+    // Rate Limiting Check (Max 1 OTP per minute per identifier)
+    if (searchIdentifier) {
+      const recentOtp = await Otp.findOne({ identifier: searchIdentifier });
+      if (recentOtp && recentOtp.createdAt) {
+        const timeSinceLastOtp = (new Date().getTime() - recentOtp.createdAt.getTime()) / 1000;
+        if (timeSinceLastOtp < 60) {
+          return NextResponse.json({ message: 'Please wait at least 1 minute before requesting another OTP.' }, { status: 429 });
+        }
       }
+    }
+
+    if (purpose === 'login' || purpose === 'forgot-password') {
       const query = email ? { email } : { mobileNumber };
       const user = await User.findOne(query);
       if (!user) {
@@ -41,8 +68,6 @@ export async function POST(req: Request) {
       if (!mobileNumber || !email) {
         return NextResponse.json({ message: 'Mobile number and email are required for signup OTP' }, { status: 400 });
       }
-    } else {
-      return NextResponse.json({ message: 'Invalid purpose' }, { status: 400 });
     }
 
     const otpCode = generateOtp();
@@ -52,11 +77,11 @@ export async function POST(req: Request) {
     expiresAt.setMinutes(expiresAt.getMinutes() + 5);
 
     // Save or update OTP in DB
-    const identifier = purpose === 'login' ? (email || targetMobileNumber) : targetMobileNumber;
+    const identifier = (purpose === 'login' || purpose === 'forgot-password') ? (email || targetMobileNumber) : targetMobileNumber;
     
     await Otp.findOneAndUpdate(
       { identifier },
-      { identifier, otp: otpCode, expiresAt },
+      { identifier, otp: otpCode, expiresAt, createdAt: new Date() },
       { upsert: true, returnDocument: 'after' }
     );
 

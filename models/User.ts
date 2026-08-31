@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password?: string;
   mobileNumber?: string;
   availableCredits: number;
+  isAdmin: boolean;
   createdAt: Date;
 }
 
@@ -29,6 +30,10 @@ const UserSchema: Schema = new Schema({
   availableCredits: {
     type: Number,
     default: 10,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
