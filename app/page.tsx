@@ -416,14 +416,23 @@ export default function AppWorkspace() {
                   Product Images
                 </motion.h1>
 
-                <motion.p
+                <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="text-base text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed"
+                  className="flex flex-col gap-4 text-base text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed"
                 >
-                  Logistics systems determine shipping charges by scanning product bounds. EcomLens automatically creates 20–30 visual layouts with centered positioning, safety margins, and optimized contrast to prevent excessive dimensional weight estimation.
-                </motion.p>
+                  <p>
+                    <strong>Stop losing money on wrong image padding & framing.</strong> EcomLens automatically creates 20–30 visual layouts with centered positioning, safety margins, and optimized contrast to prevent excessive dimensional weight estimation. 
+                  </p>
+                  <div className="flex flex-col gap-2 border-l-2 border-emerald-500 pl-4 py-1">
+                    <p className="font-semibold text-slate-700 dark:text-slate-300">✅ Save ₹35 to ₹50 per order on Meesho shipping</p>
+                    <p className="font-semibold text-slate-700 dark:text-slate-300">✅ Get lowest shipping weight slab instantly using AI</p>
+                  </div>
+                  <p className="text-sm">
+                    Meesho aur Flipkart par product listing ke liye image ka background white hona aur product ka perfectly center me hona zaroori hai. Hamara <strong>free Meesho product image editor</strong> aapke kisi bhi photo ka background remove karke use marketplace QC pass banata hai. Isse volumetric weight kam count hota hai aur aapka shipping charge (delivery cost) bach jata hai!
+                  </p>
+                </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
